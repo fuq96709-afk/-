@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="检查 AI 视频脚本的人物、动作、道具、空间、产品用法与剧情因果，逐条给出位置、生成风险和修改建议。">
+  <title>续镜 · AI 视频脚本自检器</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%23171717'/%3E%3Cpath d='M7 10h18v12H7z' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Cpath d='m13 12 8 4-8 4z' fill='%23ffffff'/%3E%3C/svg%3E">
+  <style>/* STYLES */</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="续镜首页"><span class="brand-mark" aria-hidden="true">▸</span><span>续镜<span class="brand-sub">SCRIPT CHECK</span></span></a>
+    <div class="top-actions"><span class="version">MVP / 01</span><button id="connectionButton" class="connection" type="button"><span id="connectionDot" class="dot"></span><span id="connectionText">API 模型设置</span><span aria-hidden="true">↗</span></button></div>
+  </header>
+  <main>
+    <section class="heading" aria-labelledby="title"><div><p class="eyebrow">从脚本到画面，先把逻辑接上。</p><h1 id="title">AI 视频脚本自检器</h1><p class="intro">找出容易在生成时失控的细节，留住你真正想表达的故事。</p></div><div class="heading-note"><span class="note-line"></span><span>一次检查 · 六个维度<br><strong>逐条定位，逐条修改</strong></span></div></section>
+    <div class="workspace">
+      <section class="panel input-panel" aria-labelledby="inputTitle">
+        <div class="panel-top"><div><span class="step">01</span><h2 id="inputTitle">你的脚本</h2></div><button id="sampleButton" type="button" class="text-button">试试示例 <span aria-hidden="true">↗</span></button></div>
+        <div id="methodPicker" class="method-picker" hidden><label for="checkMethod">自检方式</label><select id="checkMethod"><option value="api">API · DeepSeek / 智谱 / Kimi（自动检查）</option></select></div><div class="input-guidance">粘贴完整脚本，点击一次即可生成修正稿；首次使用需填写模型 API 密钥。</div>
+        <label class="sr-only" for="script">需要检查的视频脚本</label>
+        <div class="editor"><pre id="lineNumbers" aria-hidden="true">1</pre><textarea id="script" wrap="off" spellcheck="false" maxlength="16000" placeholder="场景一 · 清晨 · 厨房&#10;&#10;镜头 01：人物外观、手中的道具……&#10;镜头 02：接下来发生的动作……&#10;&#10;把你的脚本粘贴在这里。"></textarea></div>
+        <div class="editor-meta"><span id="lineCount">1 行</span><span id="locationFeedback" role="status"></span><span><span id="charCount">0</span> / 16,000 字符</span></div>
+        <div class="input-bottom"><div id="syncControls" class="sync-controls" hidden><p class="sync-steps">① 提交原稿　→　② 去 GPT 检查　→　③ 本页查看修正稿</p><p id="syncStatus" role="status">粘贴原稿并提交，在已连接续镜插件的 GPT 对话中发起检查。</p><p class="sync-command">在 GPT 对话中选中“续镜”插件，说：检查续镜网页中待检查的脚本，把完整修正稿和问题写回网页。无需再粘贴原稿。</p><div><a id="openGPT" class="gpt-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" hidden>去 GPT 检查 ↗</a><button id="syncRefresh" class="text-button" type="button">检查同步状态</button><button id="syncClear" class="text-button" type="button" hidden>清除暂存</button></div></div><div class="check-note"><span aria-hidden="true">✳</span><p>检查生成风险，输出完整修正稿。<br><span>缺少依据的产品用法会标为「待确认」。</span></p></div><button id="checkButton" type="button" class="primary" disabled><span aria-hidden="true">✦</span><span id="checkLabel">自检并修正</span><span aria-hidden="true">→</span></button><button id="cancelButton" type="button" class="text-button cancel" hidden>取消本次检查</button><p class="privacy" id="privacyNote">检查历史仅保存在当前浏览器；API 密钥刷新后清除。</p></div>
+      </section>
+      <section class="panel result-panel" aria-labelledby="resultTitle">
+        <div class="panel-top"><div><span class="step">02</span><h2 id="resultTitle">修正稿与检查结果</h2><span id="resultCount" class="count" hidden></span></div><span id="resultMode" class="result-mode">等待检查</span></div>
+        <div class="dimensions" id="dimensions" aria-label="六个检查维度"></div>
+        <details class="history-panel" id="historyPanel"><summary>检查历史 <span id="historyCount" class="count">0</span><span class="history-hint"><span class="history-expand">展开回看</span><span class="history-collapse">收起历史</span><span class="history-chevron" aria-hidden="true">⌄</span></span></summary><div class="history-tools"><p id="historyNotice" role="status"></p><button id="clearHistory" type="button" class="text-button">清空</button></div><div id="historyList" class="history-list"></div></details>
+        <p class="review-method">剧情与动作审校 · 一拍一件事，前后连读，保留核心剧情</p>
+        <div class="result-stats" id="resultStats" hidden><div><strong id="issueTotal">0</strong><span>发现问题</span></div><div><strong id="changeTotal">0</strong><span>实际修改</span></div><div><strong id="confirmationTotal">0</strong><span>需要确认</span></div></div>
+        <div class="result-tabs" id="resultTabs" role="tablist" aria-label="检查结果视图" hidden><span class="tab-indicator" aria-hidden="true"></span><button id="tab-revision" role="tab" type="button" aria-selected="true" aria-controls="resultArea">完整修正稿</button><button id="tab-changes" role="tab" type="button" aria-selected="false" aria-controls="resultArea" tabindex="-1">修改说明</button><button id="tab-issues" role="tab" type="button" aria-selected="false" aria-controls="resultArea" tabindex="-1">问题列表</button></div>
+        <div id="resultArea" class="result-area" aria-live="polite" aria-busy="false"></div>
+        <div class="result-footer"><span class="tiny-dot"></span>检查结果供修改参考，不能保证视频生成效果。</div>
+      </section>
+    </div>
+    <footer class="page-footer"><span>续镜 <span class="footer-divider">/</span> 给每一处衔接，多一点确定。</span><span>本机历史 · 保留原稿</span></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="connectionDialog" aria-labelledby="connectionTitle"><form id="connectionForm"><div class="dialog-top"><span class="eyebrow">MODEL CONNECTION</span><button id="closeDialog" type="button" class="close" aria-label="关闭模型连接窗口">×</button></div><h2 id="connectionTitle">接入 API 检查模型</h2><p>支持 DeepSeek、智谱 GLM 和 Kimi。选择服务，填写对应 API 密钥，结果直接显示在网页右侧。</p><div class="model-fields"><div><label for="providerSelect">模型服务</label><select id="providerSelect"><option value="deepseek">DeepSeek</option><option value="zhipu">智谱 GLM</option><option value="kimi">Kimi</option></select></div><div><label for="modelSelect">模型</label><select id="modelSelect"></select></div></div><label for="apiKey" id="apiKeyLabel">DeepSeek API 密钥</label><input id="apiKey" type="password" autocomplete="off" placeholder="sk-…" maxlength="512" required aria-describedby="keyNotice keyError"><p id="keyError" class="field-error" role="alert"></p><div class="key-notice" id="keyNotice">密钥只保留在当前页面内存中，刷新后清除。检查时经本站转发给所选服务，不写入文件或浏览器存储。调用费用由你所选服务的账户承担；各服务的密钥分别填写，不会混用。</div><div class="dialog-actions"><button id="forgetKey" type="button" class="text-button">清除密钥</button><button type="submit" class="primary">保存并继续 <span aria-hidden="true">→</span></button></div><p class="dialog-footnote">保存不会验证密钥或产生调用费用；首次检查时验证。</p></form></dialog>
+  <script type="module">/* APP */</script>
+</body>
+</html>
